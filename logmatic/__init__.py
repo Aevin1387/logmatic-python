@@ -1,5 +1,6 @@
 import logging.handlers
 from pythonjsonlogger import jsonlogger
+from logging.handlers import SysLogHandler
 import datetime
 import socket
 
@@ -53,4 +54,9 @@ class SysLogJsonHandler(logging.handlers.SysLogHandler):
 
     # Override format method to handle prefix
     def format(self, record):
-        return self._prefix + super(SysLogJsonHandler, self).format(record)
+        try:
+            return self._prefix + super(SysLogHandler, self).format(record)
+        except UnicodeDecodeError:
+            record.msg = unicode(record.msg, errors='replace')
+            record.message = unicode(record.message, errors='replace')
+            return self._prefix + super(SysLogHandler, self).format(record)

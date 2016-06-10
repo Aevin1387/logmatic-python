@@ -6,7 +6,7 @@ import logmatic
 
 logger = logging.getLogger()
 
-sh = logging.handlers.SysLogHandler('/dev/log')
+sh = logmatic.SysLogJsonHandler('/dev/log')
 sh.setFormatter(logmatic.JsonFormatter(extra={"hello": "world","hostname":socket.gethostname()},prefix="appname: "))
 logger.addHandler(sh)
 
@@ -22,4 +22,8 @@ def exception_test():
     except Exception:
         test_logger.exception("This is a fake exception")
 
+def unicode_exception_test():
+    test_logger.warn("abh\xa0ren")
+
 exception_test()
+unicode_exception_test()
